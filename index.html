@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REPRESENT YOUR COORDINATES</title>
+    <meta name="description" content="Your city. Your rival. Your coordinates. PROPER or IMPROPER - choose your side.">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Courier New', monospace;
+            background: #000;
+            color: #fff;
+            overflow-x: hidden;
+        }
+        
+        /* Logo */
+        .logo-section {
+            text-align: center;
+            padding: 60px 20px 40px 20px;
+            position: relative;
+        }
+        
+        .logo {
+            display: inline-block;
+            position: relative;
+        }
+        
+        .logo-crosshair {
+            font-size: clamp(4rem, 12vw, 8rem);
+            font-weight: 900;
+            letter-spacing: 0.05em;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .logo-crosshair::before {
+            content: '+';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 0.4em;
+            color: #666;
+            z-index: -1;
+        }
+        
+        .logo-text-main {
+            background: linear-gradient(135deg, #fff 0%, #666 50%, #fff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 2px 2px 4px rgba(255,255,255,0.1);
+        }
+        
+        .logo-subtitle {
+            font-size: clamp(0.8rem, 2vw, 1.2rem);
+            letter-spacing: 0.3em;
+            margin-top: 10px;
+            color: #888;
+            font-weight: 400;
+        }
+        
+        .coordinates-accent {
+            font-size: 0.7rem;
+            color: #444;
+            margin-top: 5px;
+            letter-spacing: 0.2em;
+        }
+        
+        /* Split Hero */
+        .split-hero {
+            display: flex;
+            min-height: 80vh;
+            position: relative;
+        }
+        
+        .split-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 60px 40px;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            border: 1px solid #222;
+        }
+        
+        .split-side:hover {
+            flex: 1.2;
+            border-color: #fff;
+        }
+        
+        .proper-side {
+            background: linear-gradient(135deg, #000 0%, #1a1a1a 100%);
+        }
+        
+        .improper-side {
+            background: linear-gradient(135deg, #1a1a1a 0%, #000 100%);
+        }
+        
+        .split-divider {
+            width: 2px;
+            background: linear-gradient(to bottom, transparent, #fff, transparent);
+            position: absolute;
+            left: 50%;
+            top: 0;
+            bottom: 0;
+            transform: translateX(-50%);
+        }
+        
+        .side-label {
+            font-size: clamp(3rem, 8vw, 6rem);
+            font-weight: 900;
+            margin-bottom: 30px;
+            letter-spacing: 0.05em;
+        }
+        
+        .proper-label {
+            color: #fff;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        .improper-label {
+            color: #888;
+            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+        }
+        
+        .side-description {
+            font-size: clamp(1rem, 2vw, 1.3rem);
+            color: #666;
+            margin-bottom: 40px;
+            text-align: center;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+        
+        .side-examples {
+            margin: 30px 0;
+        }
+        
+        .example-coord {
+            font-size: clamp(1.2rem, 2.5vw, 1.8rem);
+            margin: 15px 0;
+            letter-spacing: 0.1em;
+        }
+        
+        .example-caption {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 5px;
+        }
+        
+        .cta-button {
+            padding: 20px 50px;
+            background: transparent;
+            border: 2px solid #fff;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.2em;
+            transition: all 0.3s;
+            margin-top: 20px;
+            text-decoration: none;
+            display: inline-block;
+        }
+        
+        .proper-side .cta-button:hover {
+            background: #fff;
+            color: #000;
+            transform: scale(1.05);
+        }
+        
+        .improper-side .cta-button {
+            border-color: #888;
+            color: #888;
+        }
+        
+        .improper-side .cta-button:hover {
+            background: #888;
+            color: #000;
+            border-color: #888;
+            transform: scale(1.05);
+        }
+        
+        /* Concept Section */
+        .concept-section {
+            padding: 100px 20px;
+            text-align: center;
+            border-top: 1px solid #222;
+        }
+        
+        .concept-title {
+            font-size: clamp(2rem, 5vw, 4rem);
+            margin-bottom: 40px;
+            font-weight: 900;
+        }
+        
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 60px auto;
+        }
+        
+        .concept-card {
+            padding: 40px;
+            border: 1px solid #222;
+            background: rgba(255,255,255,0.02);
+            transition: all 0.3s;
+        }
+        
+        .concept-card:hover {
+            border-color: #666;
+            transform: translateY(-5px);
+        }
+        
+        .concept-icon {
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+        
+        .concept-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            letter-spacing: 0.1em;
+        }
+        
+        .concept-card p {
+            color: #888;
+            line-height: 1.6;
+        }
+        
+        /* Email Signup */
+        .signup-section {
+            padding: 100px 20px;
+            background: #0a0a0a;
+            border-top: 1px solid #222;
+            text-align: center;
+        }
+        
+        .signup-title {
+            font-size: clamp(2rem, 4vw, 3rem);
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+        
+        .signup-subtitle {
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1rem;
+        }
+        
+        .email-form {
+            display: flex;
+            gap: 15px;
+            max-width: 600px;
+            margin: 0 auto;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        input[type="email"] {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid #333;
+            color: #fff;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        input[type="email"]:focus {
+            outline: none;
+            border-color: #fff;
+            background: rgba(255,255,255,0.08);
+        }
+        
+        input[type="email"]::placeholder {
+            color: #555;
+        }
+        
+        button[type="submit"] {
+            padding: 20px 50px;
+            background: #fff;
+            color: #000;
+            border: none;
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            letter-spacing: 0.15em;
+            transition: all 0.3s;
+        }
+        
+        button[type="submit"]:hover {
+            background: #000;
+            color: #fff;
+            border: 1px solid #fff;
+        }
+        
+        #formMessage {
+            color: #4f4;
+            margin-top: 20px;
+            display: none;
+        }
+        
+        /* Footer */
+        .footer {
+            padding: 60px 20px;
+            border-top: 1px solid #222;
+            text-align: center;
+            color: #555;
+        }
+        
+        .footer-brand {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            color: #888;
+            letter-spacing: 0.2em;
+        }
+        
+        .footer-tagline {
+            margin-bottom: 30px;
+            font-size: 0.9rem;
+        }
+        
+        .footer-legal {
+            font-size: 0.8rem;
+            margin-top: 40px;
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .split-hero {
+                flex-direction: column;
+                min-height: auto;
+            }
+            
+            .split-divider {
+                display: none;
+            }
+            
+            .split-side:hover {
+                flex: 1;
+            }
+            
+            .email-form {
+                flex-direction: column;
+            }
+            
+            input[type="email"] {
+                min-width: 100%;
+            }
+        }
+        
+        /* Grid Background */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+            background-size: 50px 50px;
+            pointer-events: none;
+            z-index: -1;
+        }
+    </style>
+</head>
+<body>
+    <div class="grid-overlay"></div>
+    
+    <!-- Logo Section -->
+    <div class="logo-section">
+        <div class="logo">
+            <div class="logo-crosshair">
+                <span class="logo-text-main">R.Y.C.</span>
+            </div>
+            <div class="logo-subtitle">REPRESENT YOUR COORDINATES</div>
+            <div class="coordinates-accent">Geography is universal. Pride is local.</div>
+        </div>
+    </div>
+    
+    <!-- Split Hero: PROPER vs IMPROPER -->
+    <div class="split-hero">
+        <div class="split-divider"></div>
+        
+        <!-- PROPER Side -->
+        <div class="split-side proper-side">
+            <div class="side-label proper-label">PROPER</div>
+            <div class="side-description">
+                Represent your city. Your stadium. Your pride.<br>
+                No logos. Just coordinates.
+            </div>
+            <div class="side-examples">
+                <div class="example-coord">38.6226° N, 90.1928° W</div>
+                <div class="example-caption">If you know, you know.</div>
+            </div>
+            <a href="#signup" class="cta-button">SHOP PROPER</a>
+        </div>
+        
+        <!-- IMPROPER Side -->
+        <div class="split-side improper-side">
+            <div class="side-label improper-label">IMPROPER</div>
+            <div class="side-description">
+                Roast your rivals. Question their legacy.<br>
+                Still just coordinates. Still facts.
+            </div>
+            <div class="side-examples">
+                <div class="example-coord" style="color: #666;">42.7738° N, 78.7870° W</div>
+                <div class="example-caption">0-4</div>
+            </div>
+            <a href="#signup" class="cta-button">SHOP IMPROPER</a>
+        </div>
+    </div>
+    
+    <!-- The Concept -->
+    <div class="concept-section">
+        <div class="concept-title">HOW IT WORKS</div>
+        
+        <div class="concept-grid">
+            <div class="concept-card">
+                <div class="concept-icon">📍</div>
+                <h3>JUST COORDINATES</h3>
+                <p>
+                    No team names. No logos. Just latitude and longitude.
+                    100% trademark-proof. 100% factual.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <div class="concept-icon">🏟️</div>
+                <h3>ANY LOCATION</h3>
+                <p>
+                    Busch Stadium. Wrigley Field. Fenway Park. Yankee Stadium.
+                    Your high school. Your neighborhood. Anywhere.
+                </p>
+            </div>
+            
+            <div class="concept-card">
+                <div class="concept-icon">⚡</div>
+                <h3>IF YOU KNOW</h3>
+                <p>
+                    Gen Z gets it instantly. Boomers Google it.
+                    Either way, it's a conversation starter.
+                </p>
+            </div>
+        </div>
+        
+        <div style="margin-top: 60px; color: #666; max-width: 800px; margin-left: auto; margin-right: auto; line-height: 1.8;">
+            <p style="font-size: 1.1rem; margin-bottom: 20px;">
+                Geography is public domain. Coordinates can't be trademarked.
+            </p>
+            <p style="font-size: 1.1rem;">
+                So we put them on hoodies. On hats. On everything.
+            </p>
+        </div>
+    </div>
+    
+    <!-- Email Signup -->
+    <div class="signup-section" id="signup">
+        <div class="signup-title">FIRST DROP COMING SOON</div>
+        <div class="signup-subtitle">Get notified when we launch. PROPER or IMPROPER - you decide.</div>
+        
+        <form class="email-form" id="emailForm">
+            <input type="email" placeholder="YOUR@EMAIL.COM" required id="emailInput">
+            <button type="submit">NOTIFY ME</button>
+        </form>
+        
+        <p id="formMessage">✓ You're on the list. We'll be in touch.</p>
+    </div>
+    
+    <!-- Footer -->
+    <div class="footer">
+        <div class="footer-brand">R.Y.C.</div>
+        <div class="footer-tagline">
+            Represent Your Coordinates<br>
+            Your City. Your Rival. Your Choice.
+        </div>
+        <div class="footer-legal">
+            © 2026 Cloud & Secure Limited. All coordinates verified.<br>
+            Geography is universal. Pride is priceless.
+        </div>
+    </div>
+    
+    <script>
+        // Email form handling
+        document.getElementById('emailForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const email = document.getElementById('emailInput').value;
+            
+            // Store locally for now (connect to real service later)
+            const emails = JSON.parse(localStorage.getItem('rycEmails') || '[]');
+            emails.push({
+                email: email,
+                timestamp: new Date().toISOString()
+            });
+            localStorage.setItem('rycEmails', JSON.stringify(emails));
+            
+            // Show success
+            document.getElementById('formMessage').style.display = 'block';
+            document.getElementById('emailInput').value = '';
+            
+            console.log('Email collected:', email);
+        });
+        
+        // Parallax effect on scroll
+        let lastScroll = 0;
+        window.addEventListener('scroll', function() {
+            const scrolled = window.pageYOffset;
+            document.querySelector('.grid-overlay').style.transform = `translateY(${scrolled * 0.3}px)`;
+            lastScroll = scrolled;
+        });
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
